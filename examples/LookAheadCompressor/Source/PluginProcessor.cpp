@@ -231,15 +231,15 @@ AudioProcessorEditor* LookAheadCompressorAudioProcessor::createEditor()
 //==============================================================================
 void LookAheadCompressorAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    const auto str = parameters.copyState().toXmlString().toStdString();
+    destData.setSize(str.size());
+    destData.copyFrom(str.data(), 0, str.size());
 }
 
 void LookAheadCompressorAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    String str{reinterpret_cast<const char *>(data), (size_t)sizeInBytes};
+    parameters.replaceState(ValueTree::fromXml(str));
 }
 
 //==============================================================================
